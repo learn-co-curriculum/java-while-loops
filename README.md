@@ -2,20 +2,165 @@
 
 ## Learning Goals
 
-- Define what a `while` loop is and how to implement it
+- Define what a `while` loop is.
+- Show how to implement a `while` loop and how it differs from the `for` loop.
 
-## The while Statement in Java
+## What is a `while` Loop?
 
-With the `if` statement, we saw that we can make the execution of a block of
-code conditional based on the outcome of a conditional statement. In that
-scenario, the conditional block of code gets executed exactly once. What if we
-wanted to execute the same block of code multiple times, as long as a condition
-stays true? That is where the while loop comes in handy!
+A `while` loop is another way to iterate through a section of code multiple
+times based on a boolean expression. When the conditional is true, then the code
+will continuously be executed until the condition becomes false. The syntax for
+a `while` loop is as follows:
 
-A **while loop** is a control flow statement where code can continuously be
-executed repetitively based on a boolean expression. When the boolean
-expression is true, then the code will continuously be repeated until the
-expression becomes false.
+```java
+while (conditional) {
+    // Statements to run through each iteration of the loop
+}
+```
+
+This kind of loop is well suited in cases where we do not know how many times we
+want to go through a specific set of instructions. Consider the following
+flowchart:
+
+![while-loop-flowchart](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/while-loop-flowchart.png)
+
+## While Loop in Action
+
+Let's consider some code where we want to keep a running sum of the positive
+integers entered by a user.
+
+```java
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class LoopExample {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Running sum of integers
+        int sum = 0;
+        
+        try {
+            System.out.println("Please enter a positive integer:");
+            System.out.println("Program will end when a non-positive integer is entered.");
+            int userNumber = scanner.nextInt();
+            
+            while (userNumber >= 0) {
+                // Only add positive integers
+                sum += userNumber;
+
+                System.out.println("Please enter a positive integer:");
+                userNumber = scanner.nextInt();
+            }
+            
+            System.out.println("The sum of the numbers you entered is: " + sum);
+            
+        } catch (InputMismatchException exception) {
+            System.out.println("Invalid input");
+        }
+    }
+}
+```
+
+Let's break down what this `while` loop does:
+
+- If the user enters an integer that satisfies the conditional
+  `userNumber >= 0`, then the execution will enter the `while` loop. Else, the
+  execution will skip over the `while` loop.
+- It will execute the statements inside the `while` loop and then check the
+  condition again to see if it should re-enter the loop.
+- Notice how we prompt the user again in the `while` loop as well. This is so
+  we can continue checking to see if the conditional is true.
+  - In this case, we can refer to the `userNumber` variable as a
+    **sentinel value**. A sentinel value is a value that is used to terminate a
+    loop and stop getting inputs. It serves as the exit out of the `while` loop.
+    In our example, it also indicates that the user is done entering values.
+
+If we run the program with the following input:
+
+```text
+1
+2
+3
+-1
+```
+
+The output would look like this:
+
+```text
+Please enter a positive integer:
+Program will end when a non-positive integer is entered.
+1
+Please enter a positive integer:
+2
+Please enter a positive integer:
+3
+Please enter a positive integer:
+-1
+The sum of the numbers you entered is: 6
+```
+
+We can take a closer look at this program by running it in the debugger and
+analyzing each iteration.
+
+We'll set two breakpoints:
+
+- On the `while (userNumber >= 0)` line.
+- On the `System.out.println("The sum of the numbers you entered is: " + sum);`
+
+For the first number, we'll enter the integer `1`:
+
+![hit-breakpoint](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-debugger-hit-breakpoint-5.png)
+
+Notice that the `userNumber` variable has the value of `1`. Since the
+conditional is `userNumber >= 0`, we can evaluate that expression to `1 >= 0`,
+which is `true`. So, if we use the step-over action, we should enter in the
+`while` loop:
+
+![enter-while-loop](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-debugger-enter-while-loop.png)
+
+Now that we are in the loop, Java will continue executing all the statements
+within the loop. If we resume the program and enter in `2` this time, we should
+hit the `while` loop breakpoint again:
+
+![hit-while-loop-condition-again](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-debugger-hit-breakpoint-6.png)
+
+The `userNumber` variable has been reassigned to the value of `2`; therefore,
+the condition `userNumber >= 0` is equivalent to `2 >= 0`, which is still
+`true`. We can step-over the action and see it enter the loop again.
+
+![enter-while-loop-second-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-debugger-enter-while-loop-2.png)
+
+Just like last time, Java will continue executing all the statements in the
+`while` loop. Let's resume the program and enter in `-1` this time:
+
+![hit-while-loop-condition-third-time](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-debugger-hit-breakpoint-7.png)
+
+Notice we hit the `while` loop breakpoint again! We'll check the condition again
+to see if we should re-enter the loop. `userNumber` has been reassigned to `-1`,
+so the condition `userNumber >= 0` is equivalent to `-1 >= 0`. This time, the
+condition is `false`, so Java should exit the loop and proceed with executing
+the statements that follow the `while` loop. Let's step-over and see if this is
+what happens:
+
+![exit-while-loop](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-debugger-exit-while-loop.png)
+
+We can resume the program and see that the output this time is now:
+
+```text
+Please enter a positive integer:
+Program will end when a non-positive integer is entered.
+1
+Please enter a positive integer:
+2
+Please enter a positive integer:
+-1
+The sum of the numbers you entered is: 3
+```
+
+## Infinite Loops
+
+Consider the following code:
 
 ```java
 while (true) {
@@ -26,79 +171,60 @@ while (true) {
 In the code above, the statement
 `System.out.println("I'm a loop that never ends, aka an infinite loop");` will
 run as long as the condition specified in the `while` loop evaluates to
-true. Since that condition is literally the `boolean` value `true`, the
+`true`. Since that condition is literally the `boolean` value `true`, the
 condition will always be true and the loop will never stop executing. This is
-an **infinite loop**, and although useful in some specific cases, it generally
-leads to **bugs** or issues within the code.
+an **infinite loop**, and although useful in some specific rare cases, it
+generally leads to **bugs** or issues within the code.
 
-Let's consider code where the content of the `while` loop actually changes the
-condition:
+Let's look at another infinite loop example:
 
 ```java
-// simulate the passing of time
-int startingYear = 2000;
-int targetYear = 2011;
-int currentYear = startingYear;
-while (currentYear < targetYear) {
-    int yearDifference = currentYear - startingYear;
-    System.out.println(yearDifference + " year(s) have passed");
-    // conditional logic based on the current year
-    currentYear++;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class LoopExample {
+   public static void main(String[] args) {
+      Scanner scanner = new Scanner(System.in);
+
+      // Running sum of integers
+      int sum = 0;
+
+      try {
+         System.out.println("Please enter a positive integer:");
+         System.out.println("Program will end when a non-positive integer is entered.");
+         int userNumber = scanner.nextInt();
+
+         while (userNumber >= 0) {
+            // Only add positive integers
+            sum += userNumber;
+            
+            // Removed the updating of userNumber
+         }
+
+         System.out.println("The sum of the numbers you entered is: " + sum);
+
+      } catch (InputMismatchException exception) {
+         System.out.println("Invalid input");
+      }
+   }
 }
 ```
 
-In this code, we can see that the condition is now an actual expression:
-`currentYear < targetYear`. Furthermore, since we change the value of the
-variable inside the `while` loop, the value of the condition will change with
-every iteration through the loop, which means that it's possible, although not
-guaranteed, that the condition will eventually become `false` and the loop will
-stop executing.
+Notice we have removed the reassignment statement of `userNumber` from within
+the `while` loop itself. In this case, if the user were to enter a positive
+integer, we would be stuck in an infinite loop without updating the sentinel
+value!
 
-Let's see what happens when we run this code!
+If we were to run this program and enter in a value of `2`, the program would
+just sit there. It would look like it is doing nothing since we have no
+`System.out.println()` statements within the loop itself. When this happens, we
+need to manually stop and exit the program by clicking on the stop button in the
+upper-right hand corner of Intellij:
 
-```java
-0 year(s) have passed
-1 year(s) have passed
-2 year(s) have passed
-3 year(s) have passed
-4 year(s) have passed
-5 year(s) have passed
-6 year(s) have passed
-7 year(s) have passed
-8 year(s) have passed
-9 year(s) have passed
-10 year(s) have passed
-```
+![stop-button](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-stop-button.png)
 
-Notice that the output prints out the numbers 0 - 10. Let's walk through a
-little more on what happened here:
+This demonstrates the importance of the sentinel value when working with loops.
+It should also be noted that IntelliJ does try to warn us of infinite loop bugs
+as well:
 
-Before we even get into the `while` loop, initialize `startingYear` and
-`targetYear` to 2000 and 2011 respectively. Then we set `currentYear`
-equal to `startingYear`. This means that we start with `currentYear`
-being 2000.
-
-Now we will execute the first iteration of the while loop:
-
-1. We check the condition to see if `currentYear < targetYear`. This expression
-   evaluates to 2000 < 2011; which is true. So we will enter the `while` loop.
-2. We perform the difference between `currentYear` and `startingYear` and store
-   the return value in the local variable `yearDifference`. So 2000 - 2000 = 0.
-3. `yearDifference` is currently assigned the value of 0 and we will print that
-   out on a new line.
-4. Increment `currentYear`. So `currentYear++` will reassign `currentYear`
-   to 2001.
-
-In the second iteration:
-
-1. We check the condition to see if `currentYear < targetYear`. This expression
-   evaluates to 2001 < 2011; which is true. So we will continue in the
-   `while` loop.
-2. We evaluate the expression `currentYear - startingYear`. So 2001 - 2000 = 1.
-3. Print out the value of `yearDifference`, so 1.
-4. Increment `currentYear`. So `currentYear++` will reassign `currentYear`
-   to 2002.
-
-This goes on until `currentYear` is set to 2011, at which point the condition
-`currentYear < targetYear` will be false. Once the boolean expression that is
-controlling the `while` loop  is no longer true, we will exit the loop.
+![infinite-loop-warning](https://curriculum-content.s3.amazonaws.com/java-mod-1/while-loops/intellij-infinite-loop-warning.png)
