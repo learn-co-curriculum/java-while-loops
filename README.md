@@ -42,7 +42,7 @@ public class LoopExample {
         
         try {
             System.out.println("Please enter a positive integer:");
-            System.out.println("Program will end when a non-positive integer is entered.");
+            System.out.println("Program will end when a negative integer is entered.");
             int userNumber = scanner.nextInt();
             
             while (userNumber >= 0) {
@@ -71,7 +71,9 @@ Let's break down what this `while` loop does:
   condition again to see if it should re-enter the loop.
 - Notice how we prompt the user again in the `while` loop as well. This is so
   we can continue checking to see if the conditional is true.
-  - In this case, we can refer to the `userNumber` variable as a
+  - In this case, we are checking to see if the `userNumber` variable is ever
+    set to a negative number. Once the user enters a negative number, it exits
+    out of the loop. The negative number entered can be referred to as a
     **sentinel value**. A sentinel value is a value that is used to terminate a
     loop and stop getting inputs. It serves as the exit out of the `while` loop.
     In our example, it also indicates that the user is done entering values.
@@ -89,7 +91,7 @@ The output would look like this:
 
 ```text
 Please enter a positive integer:
-Program will end when a non-positive integer is entered.
+Program will end when a negative integer is entered.
 1
 Please enter a positive integer:
 2
@@ -149,7 +151,7 @@ We can resume the program and see that the output this time is now:
 
 ```text
 Please enter a positive integer:
-Program will end when a non-positive integer is entered.
+Program will end when a negative integer is entered.
 1
 Please enter a positive integer:
 2
@@ -191,7 +193,7 @@ public class LoopExample {
 
       try {
          System.out.println("Please enter a positive integer:");
-         System.out.println("Program will end when a non-positive integer is entered.");
+         System.out.println("Program will end when a negative integer is entered.");
          int userNumber = scanner.nextInt();
 
          while (userNumber >= 0) {
